@@ -92,4 +92,17 @@ describe('app routes', () => {
       });
   });
 
+  it('can delete a reviewer by id', () => {
+    return request(app)
+      .delete(`/api/v1/reviewers/${reviewer._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: reviewer._id.toString(),
+          name: 'JBJ',
+          company: 'JBJ Loves Movies',
+          __v: 0
+        });
+      });
+  });
+
 });
