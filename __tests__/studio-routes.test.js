@@ -15,6 +15,19 @@ describe('app routes', () => {
     return mongoose.connection.dropDatabase();
   });
 
+  let studio;
+  beforeEach(async () => {
+    studio = await Studio
+      .create({
+        name: 'Warner Brothers',
+        address: {
+          city: 'LA',
+          state: 'CA',
+          country: 'US'
+        }
+      });
+  });
+
   afterAll(() => {
     return mongoose.connection.close();
   });
@@ -45,7 +58,7 @@ describe('app routes', () => {
       });
   });
 
-  it('gets all studios', async() => {
+  it('gets all studios', async () => {
     const studio = await Studio.create([
       { name: 'Paramount' },
       { name: 'Columbia Pictures' },
@@ -64,5 +77,22 @@ describe('app routes', () => {
         });
       });
 
+  });
+
+  it('gets a studio by id', () => {
+    return request(app)
+      .get(`/api/v1/studios/${studio._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: studio._id.toString(),
+          name: 'Warner Brothers',
+          address: {
+            city: 'LA',
+            state: 'CA',
+            country: 'US',
+          },
+          __v: 0
+        });
+      });
   });
 });
