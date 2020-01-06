@@ -16,7 +16,7 @@ describe('app routes', () => {
   });
 
   let reviewer;
-  beforeEach(async () => {
+  beforeEach(async() => {
     reviewer = await Reviewer
       .create({
         name: 'JBJ',
@@ -45,7 +45,7 @@ describe('app routes', () => {
       });
   });
 
-  it('gets all reviewers', async () => {
+  it('gets all reviewers', async() => {
     const reviewers = await Reviewer.create([
       { name: 'JBJ', company: 'JBJ Loves Movies' },
       { name: 'Dandy', company: 'Will Probably Forget Every Movie' },

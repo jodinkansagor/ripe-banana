@@ -16,14 +16,14 @@ describe('app routes', () => {
   });
 
   let actor;
-  beforeEach( async() => {
+  beforeEach(async() => {
     actor = await Actor
       .create({
         name: 'Maya Rudolph',
         dob: 'July 27, 1972',
         pob: 'Florida'
       });
-  })
+  });
 
 
   afterAll(() => {
@@ -49,7 +49,7 @@ describe('app routes', () => {
       });
   });
 
-  it('gets all actors', async () => {
+  it('gets all actors', async() => {
     const actors = await Actor.create([
       { name: 'Maya Rudolph' },
       { name: 'Tina Fey' },
