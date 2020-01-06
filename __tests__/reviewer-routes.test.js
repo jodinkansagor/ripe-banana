@@ -78,4 +78,18 @@ describe('app routes', () => {
       });
   });
 
+  it('can update a reviewer', () => {
+    return request(app)
+      .patch(`/api/v1/reviewers/${reviewer._id}`)
+      .send({ company: 'JBJ Really Loves Movies' })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: reviewer._id.toString(),
+          name: 'JBJ',
+          company: 'JBJ Really Loves Movies',
+          __v: 0
+        });
+      });
+  });
+
 });
