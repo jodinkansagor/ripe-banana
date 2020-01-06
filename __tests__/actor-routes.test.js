@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
+const Actor = require('../lib/models/Actor');
 
 describe('app routes', () => {
   beforeAll(() => {
@@ -38,7 +39,23 @@ describe('app routes', () => {
       });
   });
 
+  it('gets all actors', async () => {
+    const actors = await Actor.create([
+      { name: 'Maya Rudolph' },
+      { name: 'Tina Fey' },
+      { name: 'Amy Poehler' }
+    ])
 
+    return request(app)
+      .get('/api/v1/actors')
+      .then(res =>
+        actors.forEach(actor => {
+          expect(res.body).toContainEqual({
+            _id: actor._id.toString(),
+            name: actor.name
+          });
+        }));
+  });
 
 
 

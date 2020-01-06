@@ -59,7 +59,7 @@ describe('app routes', () => {
   });
 
   it('gets all studios', async () => {
-    const studio = await Studio.create([
+    const studios = await Studio.create([
       { name: 'Paramount' },
       { name: 'Columbia Pictures' },
       { name: 'Warner Brothers' }
@@ -68,7 +68,7 @@ describe('app routes', () => {
     return request(app)
       .get('/api/v1/studios')
       .then(res => {
-        studio.forEach(studio => {
+        studios.forEach(studio => {
           expect(res.body).toContainEqual({
             _id: studio._id.toString(),
             name: studio.name
