@@ -15,6 +15,16 @@ describe('app routes', () => {
     return mongoose.connection.dropDatabase();
   });
 
+  let actor;
+  beforeEach( async() => {
+    actor = await Actor
+      .create({
+        name: 'Maya Rudolph',
+        dob: 'July 27, 1972',
+        pob: 'Florida'
+      });
+  })
+
 
   afterAll(() => {
     return mongoose.connection.close();
@@ -44,7 +54,7 @@ describe('app routes', () => {
       { name: 'Maya Rudolph' },
       { name: 'Tina Fey' },
       { name: 'Amy Poehler' }
-    ])
+    ]);
 
     return request(app)
       .get('/api/v1/actors')
@@ -57,6 +67,18 @@ describe('app routes', () => {
         }));
   });
 
-
+  it('gets one actor by id', () => {
+    return request(app)
+      .get(`/api/v1/actors/${actor._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: actor._id.toString(),
+          name: 'Maya Rudolph',
+          dob: '1972-07-27T07:00:00.000Z',
+          pob: 'Florida',
+          __v: 0
+        });
+      });
+  });
 
 });
