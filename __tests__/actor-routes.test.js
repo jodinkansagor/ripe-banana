@@ -39,6 +39,7 @@ describe('app routes', () => {
         pob: 'Florida'
       })
       .then(res => {
+        console.log(res.body)
         expect(res.body).toEqual({
           id: expect.any(String),
           _id: expect.any(String),
@@ -79,6 +80,7 @@ describe('app routes', () => {
           name: 'Maya Rudolph',
           dob: '1972-07-27T07:00:00.000Z',
           pob: 'Florida',
+          films: [],
           __v: 0
         });
       });
