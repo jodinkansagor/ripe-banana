@@ -37,17 +37,6 @@ describe('app routes', () => {
       pob: 'Queens, NY'
     });
 
-    // lostBoys = await Film.create({
-    //   title: 'The Lost Boys',
-    //   studioId: studio._id,
-    //   released: 1987,
-    //   cast: [
-    //     {
-    //       role: 'Michael',
-    //       actor: actor._id
-    //     }
-    //   ]
-    // });
   });
 
   afterAll(() => {
@@ -119,5 +108,43 @@ describe('app routes', () => {
       });
   });
 
+
+  it('gets a film by id', async () => {
+
+    const lostBoys = await Film.create({
+      title: 'The Lost Boys',
+      studio: studio._id,
+      released: 1987,
+      cast: [
+        {
+          role: 'Michael',
+          actor: actor._id
+        }
+      ]
+    });
+
+    return request(app)
+      .get(`/api/v1/films/${lostBoys._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: lostBoys._id.toString(),
+          title: lostBoys.title,
+          released: lostBoys.released,
+          studio: {
+            _id: studio._id.toString(),
+            name: studio.name
+          },
+          cast: [{
+            _id: expect.any(String),
+            role: lostBoys.cast[0].role,
+            actor: {
+              name: actor.name,
+              _id: lostBoys.cast[0].actor._id.toString()
+            }
+          }],
+          __v: 0
+        });
+      });
+  });
 });
 
