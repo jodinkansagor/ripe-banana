@@ -39,13 +39,13 @@ describe('app routes', () => {
       name: 'JBJ',
       company: 'JBJ Loves Movies'
     });
-    
+
     actor = await Actor.create({
       name: 'Jason Patrick',
       dob: 'June 17, 1966',
       pob: 'Queens, NY'
     });
-    
+
     film = await Film.create({
       title: 'The Lost Boys',
       studio: studio._id,
@@ -142,36 +142,25 @@ describe('app routes', () => {
 
   it('gets a film by id', async () => {
 
-    // const lostBoys = await Film.create({
-    //   title: 'The Lost Boys',
-    //   studio: studio._id,
-    //   released: 1987,
-    //   cast: [
-    //     {
-    //       role: 'Michael',
-    //       actor: actor._id
-    //     }
-    //   ]
-    // });
 
     return request(app)
       .get(`/api/v1/films/${film._id}`)
       .then(res => {
+        console.log(res.body)
         expect(res.body).toEqual({
           _id: film._id.toString(),
           title: film.title,
           id: film.id,
           released: film.released,
           reviews: [{
-
+            film: expect.any(String),
             _id: review._id.toString(),
             rating: review.rating,
             review: review.review,
-            reviewer: reviewer._id.toString(),
-            film: {
-              id: film.id,
-              _id: film._id.toString(),
-              title: film.title
+            reviewer: {
+              id: reviewer.id,
+              _id: reviewer._id.toString(),
+              name: reviewer.name
             }
           }],
           studio: {
