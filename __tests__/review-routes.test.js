@@ -70,4 +70,23 @@ describe('app routes', () => {
       });
   });
 
+  it('returns top 100 reviews', async () => {
+    await Review
+      .create([
+        { rating: 3, review: 'good', reviewer: reviewer._id, film: film._id },
+        { rating: 4, review: 'great!', reviewer: reviewer._id, film: film._id },
+        { rating: 1, review: 'meh', reviewer: reviewer._id, film: film._id }
+      ]);
+
+    return request(app)
+      .get('/api/v1/reviews')
+      .then(res => {
+        expect(res.body).toEqual([
+          { _id: expect.any(String), rating: 4, review: 'great!', reviewer: reviewer._id.toString(), film: film._id.toString(), __v: 0 },
+          { _id: expect.any(String), rating: 3, review: 'good', reviewer: reviewer._id.toString(), film: film._id.toString(), __v: 0 }
+        ]);
+      });
+  });
 });
+
+
