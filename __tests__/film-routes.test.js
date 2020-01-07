@@ -59,7 +59,7 @@ describe('app routes', () => {
       .post('/api/v1/films')
       .send({
         title: 'The Lost Boys',
-        studioId: studio._id,
+        studio: studio._id,
         released: 1987,
         cast: [
           {
@@ -75,7 +75,7 @@ describe('app routes', () => {
     const films = await Film.create([
       {
         title: 'The Lost Boys',
-        studioId: studio._id,
+        studio: studio._id,
         released: 1987,
         cast: [
           {
@@ -93,9 +93,11 @@ describe('app routes', () => {
           expect(res.body).toEqual([{
             _id: film._id.toString(),
             title: film.title,
-            studioId: studio._id.toString(),
-            released: film.released,
-            __v: 0
+            studio: {
+              _id: studio._id.toString(),
+              name: studio.name
+            },
+            released: film.released
           }]);
         });
       });
