@@ -20,7 +20,6 @@ describe('app routes', () => {
 
   let studio;
   let actor;
-  let lostBoys;
   beforeEach(async () => {
     studio = await Studio.create({
       name: 'Warner Brothers',
@@ -99,6 +98,7 @@ describe('app routes', () => {
             _id: film._id.toString(),
             title: film.title,
             studio: {
+              id: studio.id,
               _id: studio._id.toString(),
               name: studio.name
             },
@@ -131,6 +131,7 @@ describe('app routes', () => {
           title: lostBoys.title,
           released: lostBoys.released,
           studio: {
+            id: studio.id,
             _id: studio._id.toString(),
             name: studio.name
           },

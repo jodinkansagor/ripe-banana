@@ -45,6 +45,7 @@ describe('app routes', () => {
       })
       .then(res => {
         expect(res.body).toEqual({
+          id: expect.any(String),
           _id: expect.any(String),
           name: 'Paramount',
           address: {
@@ -60,16 +61,16 @@ describe('app routes', () => {
 
   it('gets all studios', async () => {
     const studios = await Studio.create([
-      { name: 'Paramount' },
-      { name: 'Columbia Pictures' },
-      { name: 'Warner Brothers' }
+      { name: 'Paramount' }
     ]);
 
     return request(app)
       .get('/api/v1/studios')
       .then(res => {
         studios.forEach(studio => {
+          console.log(res.body);
           expect(res.body).toContainEqual({
+            id: studio.id,
             _id: studio._id.toString(),
             name: studio.name
           });
@@ -84,6 +85,7 @@ describe('app routes', () => {
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
         expect(res.body).toEqual({
+          id: studio.id,
           _id: studio._id.toString(),
           name: 'Warner Brothers',
           address: {
@@ -91,6 +93,7 @@ describe('app routes', () => {
             state: 'CA',
             country: 'US',
           },
+          films: [],
           __v: 0
         });
       });
