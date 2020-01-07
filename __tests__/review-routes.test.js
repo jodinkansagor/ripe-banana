@@ -89,7 +89,6 @@ describe('app routes', () => {
             rating: 4, review: 'great!',
             reviewer: reviewer._id.toString(),
             film: {
-              id: film.id,
               title: 'The Lost Boys',
               _id: film._id.toString()
             },
@@ -101,7 +100,6 @@ describe('app routes', () => {
             review: 'good',
             reviewer: reviewer._id.toString(),
             film: {
-              id: film.id,
               title: 'The Lost Boys',
               _id: film._id.toString(),
             },

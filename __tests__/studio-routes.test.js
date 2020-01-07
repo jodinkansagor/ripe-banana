@@ -32,7 +32,7 @@ describe('app routes', () => {
     return mongoose.connection.close();
   });
 
-  it('adds a studios', () => {
+  it('adds a studio', () => {
     return request(app)
       .post('/api/v1/studios')
       .send({
@@ -45,7 +45,6 @@ describe('app routes', () => {
       })
       .then(res => {
         expect(res.body).toEqual({
-          id: expect.any(String),
           _id: expect.any(String),
           name: 'Paramount',
           address: {
@@ -69,7 +68,6 @@ describe('app routes', () => {
       .then(res => {
         studios.forEach(studio => {
           expect(res.body).toContainEqual({
-            id: studio.id,
             _id: studio._id.toString(),
             name: studio.name
           });
@@ -84,7 +82,6 @@ describe('app routes', () => {
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          id: studio.id,
           _id: studio._id.toString(),
           name: 'Warner Brothers',
           address: {

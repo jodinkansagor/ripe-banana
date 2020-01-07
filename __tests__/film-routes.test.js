@@ -88,7 +88,6 @@ describe('app routes', () => {
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
-          id: expect.any(String),
           title: 'The Lost Boys',
           studio: studio._id.toString(),
           released: 1987,
@@ -125,11 +124,9 @@ describe('app routes', () => {
       .then(res => {
         films.forEach(film => {
           expect(res.body).toContainEqual({
-            id: film.id,
             _id: film._id.toString(),
             title: film.title,
             studio: {
-              id: studio.id,
               _id: studio._id.toString(),
               name: studio.name
             },
@@ -150,10 +147,8 @@ describe('app routes', () => {
         expect(res.body).toEqual({
           _id: film._id.toString(),
           title: film.title,
-          id: film.id,
           released: film.released,
           reviews: [{
-            film: expect.any(String),
             _id: review._id.toString(),
             rating: review.rating,
             review: review.review,
@@ -164,7 +159,6 @@ describe('app routes', () => {
             }
           }],
           studio: {
-            id: studio.id,
             _id: studio._id.toString(),
             name: studio.name
           },
@@ -172,7 +166,6 @@ describe('app routes', () => {
             _id: expect.any(String),
             role: film.cast[0].role,
             actor: {
-              id: expect.any(String),
               name: actor.name,
               _id: film.cast[0].actor._id.toString()
             }
