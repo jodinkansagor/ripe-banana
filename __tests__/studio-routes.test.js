@@ -68,7 +68,6 @@ describe('app routes', () => {
       .get('/api/v1/studios')
       .then(res => {
         studios.forEach(studio => {
-          console.log(res.body);
           expect(res.body).toContainEqual({
             id: studio.id,
             _id: studio._id.toString(),

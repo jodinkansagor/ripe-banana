@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+const Review = require('../lib/models/Review');
+const Reviewer = require('../lib/models/Reviewer');
 
 describe('app routes', () => {
   beforeAll(() => {
@@ -20,6 +22,9 @@ describe('app routes', () => {
 
   let studio;
   let actor;
+  let review;
+  let film;
+  let reviewer;
   beforeEach(async () => {
     studio = await Studio.create({
       name: 'Warner Brothers',
@@ -30,11 +35,35 @@ describe('app routes', () => {
       }
     });
 
+    reviewer = await Reviewer.create({
+      name: 'JBJ',
+      company: 'JBJ Loves Movies'
+    });
+    
     actor = await Actor.create({
       name: 'Jason Patrick',
       dob: 'June 17, 1966',
       pob: 'Queens, NY'
     });
+    
+    film = await Film.create({
+      title: 'The Lost Boys',
+      studio: studio._id,
+      released: 1987,
+      cast: [{
+        role: 'Michael',
+        actor: actor.id
+      }]
+    });
+
+    review = await Review
+      .create({
+        rating: 4,
+        review: 'rad!',
+        reviewer: reviewer._id,
+        film: film._id
+      });
+
 
   });
 
@@ -59,6 +88,7 @@ describe('app routes', () => {
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
+          id: expect.any(String),
           title: 'The Lost Boys',
           studio: studio._id.toString(),
           released: 1987,
@@ -89,12 +119,13 @@ describe('app routes', () => {
         ],
       }
     ]);
-
+    console.log(films);
     return request(app)
       .get('/api/v1/films')
       .then(res => {
         films.forEach(film => {
-          expect(res.body).toEqual([{
+          expect(res.body).toContainEqual({
+            id: film.id,
             _id: film._id.toString(),
             title: film.title,
             studio: {
@@ -103,7 +134,7 @@ describe('app routes', () => {
               name: studio.name
             },
             released: film.released
-          }]);
+          });
         });
       });
   });
@@ -111,25 +142,38 @@ describe('app routes', () => {
 
   it('gets a film by id', async () => {
 
-    const lostBoys = await Film.create({
-      title: 'The Lost Boys',
-      studio: studio._id,
-      released: 1987,
-      cast: [
-        {
-          role: 'Michael',
-          actor: actor._id
-        }
-      ]
-    });
+    // const lostBoys = await Film.create({
+    //   title: 'The Lost Boys',
+    //   studio: studio._id,
+    //   released: 1987,
+    //   cast: [
+    //     {
+    //       role: 'Michael',
+    //       actor: actor._id
+    //     }
+    //   ]
+    // });
 
     return request(app)
-      .get(`/api/v1/films/${lostBoys._id}`)
+      .get(`/api/v1/films/${film._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          _id: lostBoys._id.toString(),
-          title: lostBoys.title,
-          released: lostBoys.released,
+          _id: film._id.toString(),
+          title: film.title,
+          id: film.id,
+          released: film.released,
+          reviews: [{
+
+            _id: review._id.toString(),
+            rating: review.rating,
+            review: review.review,
+            reviewer: reviewer._id.toString(),
+            film: {
+              id: film.id,
+              _id: film._id.toString(),
+              title: film.title
+            }
+          }],
           studio: {
             id: studio.id,
             _id: studio._id.toString(),
@@ -137,11 +181,11 @@ describe('app routes', () => {
           },
           cast: [{
             _id: expect.any(String),
-            role: lostBoys.cast[0].role,
+            role: film.cast[0].role,
             actor: {
               id: expect.any(String),
               name: actor.name,
-              _id: lostBoys.cast[0].actor._id.toString()
+              _id: film.cast[0].actor._id.toString()
             }
           }],
           __v: 0

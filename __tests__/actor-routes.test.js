@@ -39,7 +39,6 @@ describe('app routes', () => {
         pob: 'Florida'
       })
       .then(res => {
-        console.log(res.body)
         expect(res.body).toEqual({
           id: expect.any(String),
           _id: expect.any(String),
