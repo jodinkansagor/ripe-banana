@@ -87,6 +87,29 @@ describe('app routes', () => {
         ]);
       });
   });
+
+  it('deletes a review by id', async () => {
+
+    const review = await Review
+      .create({
+        rating: 4,
+        review: 'Cool movie',
+        reviewer: reviewer._id,
+        film: film._id
+      });
+    return request(app)
+      .delete(`/api/v1/reviews/${review._id}`)
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: review._id.toString(),
+          rating: 4,
+          review: 'Cool movie',
+          reviewer: reviewer._id.toString(),
+          film: film._id.toString(),
+          __v: 0
+        });
+      });
+  });
 });
 
 
