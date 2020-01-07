@@ -16,7 +16,7 @@ describe('app routes', () => {
   });
 
   let actor;
-  beforeEach(async() => {
+  beforeEach(async () => {
     actor = await Actor
       .create({
         name: 'Maya Rudolph',
@@ -40,6 +40,7 @@ describe('app routes', () => {
       })
       .then(res => {
         expect(res.body).toEqual({
+          id: expect.any(String),
           _id: expect.any(String),
           name: 'Maya Rudolph',
           dob: '1972-07-27T07:00:00.000Z',
@@ -49,22 +50,23 @@ describe('app routes', () => {
       });
   });
 
-  it('gets all actors', async() => {
+  it('gets all actors', async () => {
     const actors = await Actor.create([
-      { name: 'Maya Rudolph' },
       { name: 'Tina Fey' },
       { name: 'Amy Poehler' }
     ]);
 
     return request(app)
       .get('/api/v1/actors')
-      .then(res =>
+      .then(res => {
         actors.forEach(actor => {
           expect(res.body).toContainEqual({
+            id: expect.any(String),
             _id: actor._id.toString(),
             name: actor.name
           });
-        }));
+        });
+      });
   });
 
   it('gets one actor by id', () => {
@@ -72,6 +74,7 @@ describe('app routes', () => {
       .get(`/api/v1/actors/${actor._id}`)
       .then(res => {
         expect(res.body).toEqual({
+          id: actor.id,
           _id: actor._id.toString(),
           name: 'Maya Rudolph',
           dob: '1972-07-27T07:00:00.000Z',

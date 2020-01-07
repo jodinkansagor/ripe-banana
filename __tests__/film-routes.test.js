@@ -139,6 +139,7 @@ describe('app routes', () => {
             _id: expect.any(String),
             role: lostBoys.cast[0].role,
             actor: {
+              id: expect.any(String),
               name: actor.name,
               _id: lostBoys.cast[0].actor._id.toString()
             }
