@@ -72,7 +72,7 @@ describe('app routes', () => {
       });
   });
 
-  it.only('returns top 100 reviews', async () => {
+  it('returns top 100 reviews', async () => {
     await Review
       .create([
         { rating: 3, review: 'good', reviewer: reviewer._id, film: film._id },

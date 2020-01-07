@@ -16,7 +16,7 @@ describe('app routes', () => {
   });
 
   let reviewer;
-  beforeEach(async() => {
+  beforeEach(async () => {
     reviewer = await Reviewer
       .create({
         name: 'JBJ',
@@ -40,12 +40,13 @@ describe('app routes', () => {
           _id: expect.any(String),
           name: 'JBJ',
           company: 'JBJ Loves Movies',
-          __v: 0
+          __v: 0,
+          id: expect.any(String)
         });
       });
   });
 
-  it('gets all reviewers', async() => {
+  it('gets all reviewers', async () => {
     const reviewers = await Reviewer.create([
       { name: 'JBJ', company: 'JBJ Loves Movies' },
       { name: 'Dandy', company: 'Will Probably Forget Every Movie' },
@@ -60,7 +61,8 @@ describe('app routes', () => {
             _id: reviewer._id.toString(),
             name: reviewer.name,
             company: reviewer.company,
-            __v: 0
+            __v: 0,
+            id: reviewer.id
           });
         }));
   });
@@ -73,7 +75,8 @@ describe('app routes', () => {
           _id: reviewer._id.toString(),
           name: 'JBJ',
           company: 'JBJ Loves Movies',
-          __v: 0
+          __v: 0,
+          id: reviewer.id
         });
       });
   });
@@ -87,7 +90,8 @@ describe('app routes', () => {
           _id: reviewer._id.toString(),
           name: 'JBJ',
           company: 'JBJ Really Loves Movies',
-          __v: 0
+          __v: 0,
+          id: reviewer.id
         });
       });
   });
@@ -100,7 +104,8 @@ describe('app routes', () => {
           _id: reviewer._id.toString(),
           name: 'JBJ',
           company: 'JBJ Loves Movies',
-          __v: 0
+          __v: 0,
+          id: reviewer.id
         });
       });
   });
