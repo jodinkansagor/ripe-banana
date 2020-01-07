@@ -14,6 +14,10 @@ describe('app routes', () => {
     connect();
   });
 
+  beforeEach(() => {
+    return mongoose.connection.dropDatabase();
+  });
+
   let reviewer;
   let film;
   beforeEach(async () => {
@@ -39,11 +43,9 @@ describe('app routes', () => {
         studio: studio._id,
         released: 1987
       });
+
   });
 
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
 
   afterAll(() => {
     return mongoose.connection.close();
@@ -70,7 +72,7 @@ describe('app routes', () => {
       });
   });
 
-  it('returns top 100 reviews', async () => {
+  it.only('returns top 100 reviews', async () => {
     await Review
       .create([
         { rating: 3, review: 'good', reviewer: reviewer._id, film: film._id },
@@ -82,8 +84,27 @@ describe('app routes', () => {
       .get('/api/v1/reviews')
       .then(res => {
         expect(res.body).toEqual([
-          { _id: expect.any(String), rating: 4, review: 'great!', reviewer: reviewer._id.toString(), film: film._id.toString(), __v: 0 },
-          { _id: expect.any(String), rating: 3, review: 'good', reviewer: reviewer._id.toString(), film: film._id.toString(), __v: 0 }
+          {
+            _id: expect.any(String),
+            rating: 4, review: 'great!',
+            reviewer: reviewer._id.toString(),
+            film: {
+              title: 'The Lost Boys',
+              _id: film._id.toString()
+            },
+            __v: 0
+          },
+          {
+            _id: expect.any(String),
+            rating: 3,
+            review: 'good',
+            reviewer: reviewer._id.toString(),
+            film: {
+              title: 'The Lost Boys',
+              _id: film._id.toString(),
+            },
+            __v: 0
+          }
         ]);
       });
   });
