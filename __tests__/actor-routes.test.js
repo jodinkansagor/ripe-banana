@@ -72,7 +72,6 @@ describe('app routes', () => {
       .get(`/api/v1/actors/${actor._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          _id: actor._id.toString(),
           name: 'Maya Rudolph',
           dob: '1972-07-27T07:00:00.000Z',
           pob: 'Florida',
