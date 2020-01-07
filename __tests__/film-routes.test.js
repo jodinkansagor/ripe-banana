@@ -67,6 +67,22 @@ describe('app routes', () => {
             actor: actor._id
           }
         ]
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          title: 'The Lost Boys',
+          studio: studio._id.toString(),
+          released: 1987,
+          cast: [
+            {
+              _id: expect.any(String),
+              role: 'Michael',
+              actor: actor._id.toString()
+            }
+          ],
+          __v: 0
+        });
       });
   });
 
