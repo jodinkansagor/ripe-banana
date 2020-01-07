@@ -54,6 +54,8 @@ describe('app routes', () => {
       });
   });
 
+
+
   afterAll(() => {
     return mongoose.connection.close();
   });
@@ -101,7 +103,6 @@ describe('app routes', () => {
     return request(app)
       .get(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
-        console.log(res.body)
         expect(res.body).toEqual({
           _id: reviewer._id.toString(),
           name: 'JBJ',
@@ -143,30 +144,8 @@ describe('app routes', () => {
     return request(app)
       .delete(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
-        expect(res.body).toEqual({
-          _id: reviewer._id.toString(),
-          name: 'JBJ',
-          company: 'JBJ Loves Movies',
-          __v: 0,
-          id: reviewer.id
-        });
+        expect(res.body.status).toEqual(409);
       });
   });
 
-  // it('wont delete a reviewer if they have reviews', () => {
-  //   new Review({
-  //     rating: 4,
-  //     review: 'great!',
-  //     reviewer: reviewer._id,
-  //     film: film._id
-  //   });
-  //   console.log(reviewer)
-  //   return request(app)
-  //     .delete(`/api/v1/reviewers/${reviewer._id}`)
-  //     .then(res =>
-  //       expect(res.body).toEqual({
-
-  //       })
-  //     );
-  // });
 });
