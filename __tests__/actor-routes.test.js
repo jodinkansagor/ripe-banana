@@ -19,9 +19,9 @@ describe('app routes', () => {
   beforeEach(async () => {
     actor = await Actor
       .create({
-        name: 'Maya Rudolph',
-        dob: '1972-07-27T00:00:00.000Z',
-        pob: 'Florida'
+        name: 'Jason Patrick',
+        dob: '1966-06-17T00:00:00.000Z',
+        pob: 'Queens, NY'
       });
   });
 
@@ -34,16 +34,16 @@ describe('app routes', () => {
     return request(app)
       .post('/api/v1/actors')
       .send({
-        name: 'Maya Rudolph',
-        dob: '1972-07-27T00:00:00.000Z',
-        pob: 'Florida'
+        name: 'Jason Patrick',
+        dob: '1966-06-17T00:00:00.000Z',
+        pob: 'Queens, NY'
       })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
-          name: 'Maya Rudolph',
-          dob: '1972-07-27T00:00:00.000Z',
-          pob: 'Florida',
+          name: 'Jason Patrick',
+          dob: '1966-06-17T00:00:00.000Z',
+          pob: 'Queens, NY',
           __v: 0
         });
       });
@@ -51,8 +51,8 @@ describe('app routes', () => {
 
   it('gets all actors', async () => {
     const actors = await Actor.create([
-      { name: 'Tina Fey' },
-      { name: 'Amy Poehler' }
+      { name: 'Corey Haim' },
+      { name: 'Corey Feldman' }
     ]);
 
     return request(app)
@@ -72,9 +72,9 @@ describe('app routes', () => {
       .get(`/api/v1/actors/${actor._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          name: 'Maya Rudolph',
-          dob: '1972-07-27T00:00:00.000Z',
-          pob: 'Florida',
+          name: 'Jason Patrick',
+          dob: '1966-06-17T00:00:00.000Z',
+          pob: 'Queens, NY',
           films: [],
           __v: 0
         });
