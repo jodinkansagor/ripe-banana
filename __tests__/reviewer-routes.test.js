@@ -114,7 +114,6 @@ describe('app routes', () => {
             _id: review._id.toString(),
             rating: review.rating,
             review: review.review,
-            reviewer: reviewer._id.toString(),
             film: {
               _id: film._id.toString(),
               title: film.title
