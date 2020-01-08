@@ -2,6 +2,7 @@ const { getActor, getActors, getFilm, getFilms, getReview, getReviews, getStudio
 
 const request = require('supertest');
 const app = require('../lib/app');
+const Reviewer = require('../lib/models/Reviewer');
 
 
 describe('app routes', () => {
@@ -44,7 +45,7 @@ describe('app routes', () => {
   it('can get a reviewer by id', async () => {
     const reviewer = await getReviewer();
     const reviews = await getReviews({ reviewer: reviewer._id });
-    const film = await getFilm();
+
 
 
     return request(app)
@@ -73,25 +74,18 @@ describe('app routes', () => {
       });
   });
 
-  // {
 
-  //   _id: review._id.toString(),
-  //   rating: review.rating,
-  //   review: review.review,
-  //   film: {
-  //     _id: film._id.toString(),
-  //     title: film.title
-  //   }
-  // }
 
-  it('can update a reviewer', () => {
+  it('can update a reviewer', async () => {
+    const reviewer = await getReviewer();
+
     return request(app)
       .patch(`/api/v1/reviewers/${reviewer._id}`)
       .send({ company: 'JBJ Really Loves Movies' })
       .then(res => {
         expect(res.body).toEqual({
           _id: reviewer._id.toString(),
-          name: 'JBJ',
+          name: reviewer.name,
           company: 'JBJ Really Loves Movies',
           __v: 0,
           id: reviewer.id
@@ -99,12 +93,24 @@ describe('app routes', () => {
       });
   });
 
-  it('can delete a reviewer by id', () => {
+  it('can delete a reviewer by id', async () => {
+    const reviewer = await Reviewer.create({
+      name: 'JBJ',
+      company: 'JBJ loves movies'
+    });
+
+
     return request(app)
       .delete(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
-        expect(res.body.status).toEqual(409);
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          name: 'JBJ',
+          company: 'JBJ loves movies',
+          __v: 0,
+          id: expect.any(String)
+        });
       });
   });
-
 });
+
