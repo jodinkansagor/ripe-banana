@@ -1,34 +1,11 @@
-require('dotenv').config();
+const { getActor, getActors, getFilm, getFilms, getReview, getReviews, getStudio, getStudios, getReviewer, getReviewers } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Actor = require('../lib/models/Actor');
+
 
 describe('app routes', () => {
-  beforeAll(() => {
-    connect();
-  });
 
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
-
-  let actor;
-  beforeEach(async () => {
-    actor = await Actor
-      .create({
-        name: 'Jason Patrick',
-        dob: '1966-06-17T00:00:00.000Z',
-        pob: 'Queens, NY'
-      });
-  });
-
-
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
 
   it('adds and actor', () => {
     return request(app)
@@ -50,10 +27,8 @@ describe('app routes', () => {
   });
 
   it('gets all actors', async () => {
-    const actors = await Actor.create([
-      { name: 'Corey Haim' },
-      { name: 'Corey Feldman' }
-    ]);
+    const actors = await getActors();
+
 
     return request(app)
       .get('/api/v1/actors')
@@ -67,15 +42,22 @@ describe('app routes', () => {
       });
   });
 
-  it('gets one actor by id', () => {
+  it('gets one actor by id', async () => {
+    const actor = await getActor();
+    const films = await getFilms({ 'cast.actor': actor._id });
+
     return request(app)
       .get(`/api/v1/actors/${actor._id}`)
       .then(res => {
+        films.forEach(film => {
+          expect(res.body.films).toContainEqual({ _id: film.id, cast: [{ actor: actor.id }], released: film.released, title: film.title });
+        });
         expect(res.body).toEqual({
-          name: 'Jason Patrick',
-          dob: '1966-06-17T00:00:00.000Z',
-          pob: 'Queens, NY',
-          films: [],
+          _id: actor.id,
+          name: actor.name,
+          dob: actor.dob.toISOString(),
+          pob: actor.pob,
+          films: expect.any(Array),
           __v: 0
         });
       });

@@ -1,64 +1,10 @@
-require('dotenv').config();
+const { getActor, getActors, getFilm, getFilms, getReview, getReviews, getStudio, getStudios, getReviewer, getReviewers } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Reviewer = require('../lib/models/Reviewer');
-const Review = require('../lib/models/Review');
-const Studio = require('../lib/models/Studio');
-const Film = require('../lib/models/Film');
+
 
 describe('app routes', () => {
-  beforeAll(() => {
-    connect();
-  });
-
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
-
-  let reviewer;
-  let review;
-  let film;
-  beforeEach(async () => {
-    reviewer = await Reviewer
-      .create({
-        name: 'JBJ',
-        company: 'JBJ Loves Movies'
-      });
-
-    const studio = await Studio
-      .create({
-        name: 'Warner Brothers',
-        address: {
-          city: 'LA',
-          state: 'CA',
-          country: 'US'
-        }
-      });
-
-    film = await Film
-      .create({
-        title: 'The Lost Boys',
-        studio: studio._id,
-        released: 1987
-      });
-
-    review = await Review
-      .create({
-        rating: 4,
-        review: 'the best',
-        reviewer: reviewer._id,
-        film: film._id
-      });
-  });
-
-
-
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
 
   it('adds a reviewer', () => {
     return request(app)
@@ -79,11 +25,7 @@ describe('app routes', () => {
   });
 
   it('gets all reviewers', async () => {
-    const reviewers = await Reviewer.create([
-      { name: 'JBJ', company: 'JBJ Loves Movies' },
-      { name: 'Dandy', company: 'Will Probably Forget Every Movie' },
-      { name: 'Rosey', company: 'Dogs Like Movies Too' }
-    ]);
+    const reviewers = await getReviewers();
 
     return request(app)
       .get('/api/v1/reviewers')
@@ -99,29 +41,48 @@ describe('app routes', () => {
         }));
   });
 
-  it('can get a reviewer by id', () => {
+  it('can get a reviewer by id', async () => {
+    const reviewer = await getReviewer();
+    const reviews = await getReviews({ reviewer: reviewer._id });
+    const film = await getFilm();
+
+
     return request(app)
       .get(`/api/v1/reviewers/${reviewer._id}`)
       .then(res => {
-        expect(res.body).toEqual({
-          _id: reviewer._id.toString(),
-          name: 'JBJ',
-          company: 'JBJ Loves Movies',
-          __v: 0,
-          id: reviewer.id,
-          reviews: [{
-
+        reviews.forEach(review => {
+          expect(res.body.reviews).toContainEqual({
             _id: review._id.toString(),
             rating: review.rating,
             review: review.review,
             film: {
-              _id: film._id.toString(),
-              title: film.title
+              _id: expect.any(String),
+              title: expect.any(String)
             }
-          }]
+          });
+        });
+
+        expect(res.body).toEqual({
+          _id: reviewer._id.toString(),
+          name: reviewer.name,
+          company: reviewer.company,
+          __v: 0,
+          id: reviewer.id,
+          reviews: expect.any(Array)
         });
       });
   });
+
+  // {
+
+  //   _id: review._id.toString(),
+  //   rating: review.rating,
+  //   review: review.review,
+  //   film: {
+  //     _id: film._id.toString(),
+  //     title: film.title
+  //   }
+  // }
 
   it('can update a reviewer', () => {
     return request(app)

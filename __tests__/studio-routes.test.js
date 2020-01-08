@@ -1,36 +1,11 @@
-require('dotenv').config();
+const { getActor, getActors, getFilm, getFilms, getReview, getReviews, getStudio, getStudios, getReviewer, getReviewers } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Studio = require('../lib/models/Studio');
+
 
 describe('app routes', () => {
-  beforeAll(() => {
-    connect();
-  });
 
-  beforeEach(() => {
-    return mongoose.connection.dropDatabase();
-  });
-
-  let studio;
-  beforeEach(async () => {
-    studio = await Studio
-      .create({
-        name: 'Warner Brothers',
-        address: {
-          city: 'LA',
-          state: 'CA',
-          country: 'US'
-        }
-      });
-  });
-
-  afterAll(() => {
-    return mongoose.connection.close();
-  });
 
   it('adds a studio', () => {
     return request(app)
@@ -59,9 +34,7 @@ describe('app routes', () => {
   });
 
   it('gets all studios', async () => {
-    const studios = await Studio.create([
-      { name: 'Paramount' }
-    ]);
+    const studios = await getStudios();
 
     return request(app)
       .get('/api/v1/studios')
@@ -77,19 +50,26 @@ describe('app routes', () => {
 
   });
 
-  it('gets a studio by id', () => {
+  it('gets a studio by id', async () => {
+    const studio = await getStudio();
+    const films = await getFilms({ films: studio._id });
+
     return request(app)
       .get(`/api/v1/studios/${studio._id}`)
       .then(res => {
+        films.forEach(film => {
+          expect(res.body.films).toContainEqual({ _id: film.id });
+        });
+
         expect(res.body).toEqual({
           _id: studio._id.toString(),
-          name: 'Warner Brothers',
+          name: studio.name,
           address: {
-            city: 'LA',
-            state: 'CA',
-            country: 'US',
+            city: studio.address.city,
+            state: studio.address.state,
+            country: studio.address.country,
           },
-          films: [],
+          films: expect.any(Array),
           __v: 0
         });
       });
