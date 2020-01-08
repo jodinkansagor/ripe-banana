@@ -20,7 +20,7 @@ describe('app routes', () => {
     actor = await Actor
       .create({
         name: 'Maya Rudolph',
-        dob: 'July 27, 1972',
+        dob: '1972-07-27T00:00:00.000Z',
         pob: 'Florida'
       });
   });
@@ -35,14 +35,14 @@ describe('app routes', () => {
       .post('/api/v1/actors')
       .send({
         name: 'Maya Rudolph',
-        dob: 'July 27, 1972',
+        dob: '1972-07-27T00:00:00.000Z',
         pob: 'Florida'
       })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
           name: 'Maya Rudolph',
-          dob: '1972-07-27T07:00:00.000Z',
+          dob: '1972-07-27T00:00:00.000Z',
           pob: 'Florida',
           __v: 0
         });
@@ -73,7 +73,7 @@ describe('app routes', () => {
       .then(res => {
         expect(res.body).toEqual({
           name: 'Maya Rudolph',
-          dob: '1972-07-27T07:00:00.000Z',
+          dob: '1972-07-27T00:00:00.000Z',
           pob: 'Florida',
           films: [],
           __v: 0
