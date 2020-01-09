@@ -35,22 +35,11 @@ describe('app routes', () => {
 
     return request(app)
       .get('/api/v1/reviews')
-      .then(res =>
-        reviews.forEach(review => {
-          expect(res.body).toContainEqual({
-            _id: review.id,
-            rating: review.rating,
-            review: review.review,
-            reviewer: expect.any(String),
-            film: {
-              title: expect.any(String),
-              _id: expect.any(String)
-            },
-            __v: 0
-          });
-        })
-      );
+      .then(res => {
+        expect(res.body).toHaveLength(5);
+      });
   });
+
 
   it('deletes a review by id', async () => {
 
